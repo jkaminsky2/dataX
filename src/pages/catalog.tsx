@@ -72,7 +72,7 @@ const DataCatalogPage = () => {
 
   return (
     <Box p={8}>
-      <Heading as="h1" size="lg" textAlign="center" mb={8}>
+      <Heading size="lg" textAlign="center" mb={8}>
         Data Catalog
       </Heading>
 
