@@ -22,7 +22,7 @@ const Home: NextPage = () => {
           </a>
         </h1>
         <p className={styles.description}>
-          Connect your wallet and start playing around
+          Connect your wallet and start playing around!
         </p>
 
         {/* Wallet Connect Button */}
