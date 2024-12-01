@@ -10,14 +10,14 @@ const Home: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Dapp Boilerplate</title>
-        <meta name="description" content="Dapp Boilerplate by JalelTounsi" />
+        <title>DataX</title>
+        <meta name="description" content="DSC180a Project" />
       </Head>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to{" "}
-          <a href="https://github.com/JalelTounsi/DataX">
+          <a href="https://github.com/gchongg/dataX">
             DataX 
           </a>
         </h1>
