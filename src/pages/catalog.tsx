@@ -24,6 +24,22 @@ import { ethers } from 'ethers';
 import { PinataSDK } from 'pinata';
 import abi from '../abis/ddm.json';
 
+// Define a type for your dataset object
+type Dataset = {
+  id: number;
+  title: string;
+  provider: string;
+  description: string;
+  cid: string;
+  price: string;
+  popularity: number;
+  date: Date;
+  availability: string;
+  category: string;
+  businessNeed: string;
+  geo: string;
+};
+
 const CONTRACT_ADDRESS = ethers.utils.getAddress('0xDE62cFAbBF894a664cBdA497b469B7779E56Aa15');
 const INFURA_API_URL = process.env.NEXT_PUBLIC_INFURA_API_URL;
 const pinata = new PinataSDK({
@@ -32,7 +48,8 @@ const pinata = new PinataSDK({
 });
 
 const ListView = () => {
-  const [datasets, setDatasets] = useState([]);
+  // Explicitly set the type for datasets state
+  const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('Most Popular');
   const [filters, setFilters] = useState({
@@ -43,7 +60,7 @@ const ListView = () => {
     price: '',
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDatasets = async () => {
@@ -58,7 +75,7 @@ const ListView = () => {
         const datasetPromises = Array.from({ length: datasetCount }, (_, id) => contract.getDataset(id + 1));
         const datasetDetails = await Promise.all(datasetPromises);
 
-        const formattedDatasets = datasetDetails.map((dataset, index) => ({
+        const formattedDatasets: Dataset[] = datasetDetails.map((dataset, index) => ({
           id: index + 1,
           title: dataset[0],
           provider: dataset[3],
@@ -85,11 +102,11 @@ const ListView = () => {
     fetchDatasets();
   }, []);
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
 
-  const handleFilterChange = (filterKey, value) => {
+  const handleFilterChange = (filterKey: string, value: string) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filterKey]: value }));
   };
 
@@ -97,7 +114,7 @@ const ListView = () => {
     let filtered = datasets.filter((item) => {
       const matchesSearch = item.title.toLowerCase().includes(searchTerm);
       const matchesFilters = Object.keys(filters).every(
-        (key) => !filters[key] || item[key] === filters[key]
+        (key) => !filters[key as keyof typeof filters] || item[key as keyof Dataset] === filters[key as keyof typeof filters]
       );
       return matchesSearch && matchesFilters;
     });
@@ -105,7 +122,7 @@ const ListView = () => {
     if (sortOption === 'Most Popular') {
       filtered.sort((a, b) => b.popularity - a.popularity);
     } else if (sortOption === 'Most Recent') {
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+      filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } else if (sortOption === 'Title') {
       filtered.sort((a, b) => a.title.localeCompare(b.title));
     }
@@ -113,7 +130,7 @@ const ListView = () => {
     return filtered;
   }, [datasets, searchTerm, filters, sortOption]);
 
-  const downloadDataset = async (cid) => {
+  const downloadDataset = async (cid: string) => {
     try {
       if (!cid) {
         throw new Error('CID cannot be empty');
