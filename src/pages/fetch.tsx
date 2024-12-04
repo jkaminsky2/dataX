@@ -22,8 +22,9 @@ const DownloadFile: React.FC = () => {
       // Fetching the file using Pinata SDK for private files
       const { data, contentType } = await pinata.gateways.get(cid);
 
-      // Creating a Blob from the data and triggering download
-      const blob = new window.Blob([data], { type: contentType });
+      // Converting data to a string before creating a Blob if needed
+      const dataString = typeof data === "string" ? data : JSON.stringify(data);
+      const blob = new window.Blob([dataString], { type: contentType || "application/octet-stream" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
