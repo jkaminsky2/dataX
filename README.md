@@ -1,6 +1,6 @@
 # Data Marketplace Blockchain
 --------
-
+**Decentralized Data Marketplace:** [data-x-delta.vercel.app](https://data-x-delta.vercel.app)
 **Project website:** https://suaye07.github.io/DSC180_proj_web/
 
 <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
