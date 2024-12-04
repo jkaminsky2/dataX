@@ -1,19 +1,17 @@
 import { useState } from "react";
-import { Button, Box, Input, Text } from "@chakra-ui/react";
+import { Button, Box, Input } from "@chakra-ui/react";
 import { PinataSDK } from "pinata";
-import { Blob } from "buffer";
 
 const pinata = new PinataSDK({
   pinataJwt: process.env.NEXT_PUBLIC_PINATA_JWT!,
   pinataGateway: process.env.NEXT_PUBLIC_GATEWAY_URL!,
 });
 
-const DisplayFile: React.FC = () => {
+const DownloadFile: React.FC = () => {
   const [cid, setCid] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [output, setOutput] = useState<string | null>(null);
 
-  const fetchFile = async () => {
+  const downloadFile = async () => {
     try {
       if (!cid) {
         throw new Error("CID cannot be empty");
@@ -24,15 +22,18 @@ const DisplayFile: React.FC = () => {
       // Fetching the file using Pinata SDK for private files
       const { data, contentType } = await pinata.gateways.get(cid);
 
-      // Displaying the file content
-      if (contentType && contentType.startsWith("text")) {
-        setOutput(data);
-      } else {
-        setOutput("Non-text content retrieved");
-      }
+      // Creating a Blob from the data and triggering download
+      const blob = new window.Blob([data], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "downloaded-file";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error fetching the file:", error);
-      setOutput("Error fetching the file: " + error.message);
+      console.error("Error downloading the file:", error);
     } finally {
       setLoading(false);
     }
@@ -46,16 +47,11 @@ const DisplayFile: React.FC = () => {
         onChange={(e) => setCid(e.target.value)}
         mb={4}
       />
-      <Button onClick={fetchFile} isLoading={loading} loadingText="Fetching..." colorScheme="teal" disabled={!cid}>
-        Fetch File
+      <Button onClick={downloadFile} isLoading={loading} loadingText="Downloading..." colorScheme="teal" disabled={!cid}>
+        Download File
       </Button>
-      {output && (
-        <Box mt={4} p={4} borderWidth="1px" borderRadius="md">
-          <Text>{output}</Text>
-        </Box>
-      )}
     </Box>
   );
 };
 
-export default DisplayFile;
+export default DownloadFile;
