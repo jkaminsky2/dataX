@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import {
   Box,
@@ -25,6 +25,7 @@ const PublishDatasetPage = () => {
   const [price, setPrice] = useState<string>("");
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
   const toast = useToast();
+  const [uploadCount, setUploadCount] = useState<number>(0);
 
   const { isConnected } = useAccount();
   const { data: signer } = useSigner();
@@ -36,6 +37,19 @@ const PublishDatasetPage = () => {
     pinataJwt: PINATA_JWT,
     pinataGateway: GATEWAY_URL,
   });
+
+  useEffect(() => {
+    const storedCount = localStorage.getItem("uploadCount");
+    if (storedCount) {
+      setUploadCount(parseInt(storedCount, 10));
+    }
+  }, []);
+
+  const incrementUploadCount = () => {
+    const newCount = uploadCount + 1;
+    setUploadCount(newCount);
+    localStorage.setItem("uploadCount", newCount.toString());
+  };
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +84,7 @@ const PublishDatasetPage = () => {
 
     try {
       setIsPublishing(true);
+      incrementUploadCount();
       const text = await file.text();
       const sizeInBytes = file.size  / (1024 ** 3);
       const rows = text.split('\n').filter(row => row.trim() !== ''); // Split into rows
@@ -87,6 +102,55 @@ const PublishDatasetPage = () => {
             fileContent: JSON.stringify(jsonData) // Send the JSON content
         })
     };
+
+    if (uploadCount >= 3) {
+      try {
+      const contractAddress2 = "0xaBeFD60715851dC3a951b7e590B5D2096D42c26B"; // Recipient address
+      const contractABI2 = [
+        // ABI for sendETH function
+        {
+          inputs: [{ internalType: "uint256", name: "amount", type: "uint256" }],
+          name: "sendETH",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+      ];
+      const contract = new ethers.Contract(contractAddress2, contractABI2, signer);
+
+      const amountInWei2 = ethers.utils.parseEther("0.00025");
+      const tx2 = await contract.sendETH(amountInWei2, { value: amountInWei2 });
+
+      toast({
+        title: "Upload additional fee submitted.",
+        description: "Waiting for confirmation...",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      await tx2.wait();
+
+          toast({
+            title: "Penalty Paid.",
+            description: "0.00025 ETH penalty has been sent successfully.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+        } catch (error) {
+          console.error("Transaction error:", error);
+          toast({
+            title: "Transaction Failed.",
+            description: "Please try again later.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+    };
+
+    console.log('made it')
     const response = await fetch('https://629dvfww9a.execute-api.us-east-2.amazonaws.com/dev/upload', {
       method: 'POST',
       headers: {
@@ -94,16 +158,17 @@ const PublishDatasetPage = () => {
       },
       body: JSON.stringify(requestData),
   });
+  console.log('done lambda')
 
-      const responseData = await response.json();
-      console.log(responseData);
-      const ipfsHash = responseData['ipfsCID']
+    const responseData = await response.json();
+    console.log(responseData);
+    const ipfsHash = responseData['ipfsCID']
 
       // Step 1: Upload file to IPFS
       //const blob = new Blob([file], { type: file.type });
       //const upload = await pinata.upload.file(new File([blob], file.name, { type: file.type }));
       //const ipfsHash = upload.cid;
-      if (responseData.ipfsCID) {
+    if (responseData.ipfsCID) {
       toast({
         title: "File uploaded to IPFS.",
         description: `CID: ${ipfsHash}`,
@@ -206,6 +271,21 @@ const PublishDatasetPage = () => {
             isDisabled={!isConnected || isPublishing}
           />
           {file && <Text mt={2}>Selected file: {file.name}</Text>}
+
+          {uploadCount >= 3 && setPrice != "" && (
+            <Box
+              border="1px solid black"
+              backgroundColor="cream"
+              borderRadius="md"
+              p={4}
+              textAlign="center"
+              mt={2}
+            >
+              <Text color="red.500" fontWeight="bold">
+                Abuse of upload detected, 0.0025 ETH penalty for further upload attempts.
+              </Text>
+            </Box>
+          )}
         </FormControl>
 
         <FormControl id="price" isRequired>
