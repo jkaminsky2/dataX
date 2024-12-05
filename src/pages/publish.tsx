@@ -103,7 +103,7 @@ const PublishDatasetPage = () => {
         })
     };
 
-    if (uploadCount >= 3) {
+    if (uploadCount >= 5) {
       try {
       const contractAddress2 = "0xaBeFD60715851dC3a951b7e590B5D2096D42c26B"; // Recipient address
       const contractABI2 = [
@@ -272,7 +272,7 @@ const PublishDatasetPage = () => {
           />
           {file && <Text mt={2}>Selected file: {file.name}</Text>}
 
-          {uploadCount >= 3 && setPrice != "" && (
+          {uploadCount >= 5 && setPrice != "" && (
             <Box
               border="1px solid black"
               backgroundColor="cream"
