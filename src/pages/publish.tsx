@@ -17,7 +17,7 @@ import { PinataSDK } from "pinata";
 import abi from "../abis/ddm.json"; // Adjust to your ABI file path
 
 const CONTRACT_ADDRESS = "0xDE62cFAbBF894a664cBdA497b469B7779E56Aa15";
-//console.log(CONTRACT_ADDRESS);
+
 const PublishDatasetPage = () => {
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -70,11 +70,39 @@ const PublishDatasetPage = () => {
 
     try {
       setIsPublishing(true);
+      const text = await file.text();
+      const sizeInBytes = file.size  / (1024 ** 3);
+      const rows = text.split('\n').filter(row => row.trim() !== ''); // Split into rows
+      const headers = rows[0].split(',').map(header => header.trim()); // Extract headers
+      const jsonData = rows.slice(1).map(row => {
+          const values = row.split(',').map(value => value.trim());
+          return headers.reduce((acc: { [key: string]: string }, header, index) => {
+            acc[header] = values[index];
+            return acc;
+        }, {});
+      });
+      const requestData = {
+        body: JSON.stringify({
+            fileName: file.name, // Send the file name
+            fileContent: JSON.stringify(jsonData) // Send the JSON content
+        })
+    };
+    const response = await fetch('https://629dvfww9a.execute-api.us-east-2.amazonaws.com/dev/upload', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+  });
+
+      const responseData = await response.json();
+      console.log(responseData);
+      const ipfsHash = responseData['ipfsCID']
 
       // Step 1: Upload file to IPFS
-      const blob = new Blob([file], { type: file.type });
-      const upload = await pinata.upload.file(new File([blob], file.name, { type: file.type }));
-      const ipfsHash = upload.cid;
+      //const blob = new Blob([file], { type: file.type });
+      //const upload = await pinata.upload.file(new File([blob], file.name, { type: file.type }));
+      //const ipfsHash = upload.cid;
 
       toast({
         title: "File uploaded to IPFS.",
