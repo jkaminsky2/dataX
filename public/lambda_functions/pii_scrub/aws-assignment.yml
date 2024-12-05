@@ -1,0 +1,14 @@
+name: myenv
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pandas
+  - spacy
+  - chardet
+  - requests
+  - boto3
+  - time
+  - pip
+  - pip:
