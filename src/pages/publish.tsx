@@ -103,7 +103,7 @@ const PublishDatasetPage = () => {
       //const blob = new Blob([file], { type: file.type });
       //const upload = await pinata.upload.file(new File([blob], file.name, { type: file.type }));
       //const ipfsHash = upload.cid;
-
+      if (responseData.ipfsCID) {
       toast({
         title: "File uploaded to IPFS.",
         description: `CID: ${ipfsHash}`,
@@ -111,6 +111,18 @@ const PublishDatasetPage = () => {
         duration: 5000,
         isClosable: true,
       });
+    } else {
+      const error_mess = responseData.errorMessage
+      toast({
+        title: error_mess,
+        description: "Please remove and try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+
+    }
 
       // Step 2: Publish dataset details to the blockchain
       const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
