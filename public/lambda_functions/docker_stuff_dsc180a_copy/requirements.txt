@@ -1,6 +1,0 @@
-pandas
-spacy
-chardet
-requests
-boto3
-time
