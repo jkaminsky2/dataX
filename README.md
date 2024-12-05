@@ -38,7 +38,13 @@ NEXT_PUBLIC_INFURA_API_URL=https://sepolia.infura.io/v3/{your infura api key }
 
 ### Appendix
 
-To run the AWS Lambda functions, download their folders in public/lambda_functions. Then, unzip `node_modules` in pinata_upload and `venv` in pii_scrub. From there, you can directly upload the pinata_upload function to AWS Lambda function as a zip file. Make sure to change `PINATA_JWT` and `GATEWAY_URL` to your specific keys. You will need to include your credentials for Pinata. As for the pii_scrub, you will need to construct an image. Follow these steps:
+#### Smart Contracts
+
+transfer.sol - included in the public/smart_contracts folder; transfers ETH to Joey's address in the instance of abuse to the Lambda functions. This exchange helps to ensure that the costs related to the Lambda functions and IPFS storage are paid for (and nothing more).
+
+#### Lambda Functions
+
+To run the AWS Lambda functions that are related to the smart contracts, download their folders in public/lambda_functions. Then, unzip `node_modules` in pinata_upload and `venv` in pii_scrub. From there, you can directly upload the pinata_upload function to AWS Lambda function as a zip file. Make sure to change `PINATA_JWT` and `GATEWAY_URL` to your specific keys. You will need to include your credentials for Pinata. As for the pii_scrub, you will need to construct an image. Follow these steps:
 
 1. Navigate to the foldrer pii_scrub
 2. Go to ECR in AWS and create a new repository
