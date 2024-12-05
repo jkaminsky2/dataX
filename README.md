@@ -45,3 +45,4 @@ To run the AWS Lambda functions, download their folders in public/lambda_functio
 3. Follow the steps outlined there on how to upload the image
 4. Navigate to Lambda and create a new function via an image
 5. Link the Lambda function to the image you created
+6. Remember to change the creditantials for pinata to your own pinataJWT and pinataGateway
