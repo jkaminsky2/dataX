@@ -45,9 +45,10 @@ transfer.sol - included in the public/smart_contracts folder; transfers ETH to J
 #### Lambda Functions
 
 For pinata, after you open the account:
-1.Create a api key and safe the PINATA_JWT somewhere secretly as it only appear once(for simpicity, just click admin as the permission for test purpose)
-2.Navigate to gateway to maintain the GATEWAY_URL
-3.Safe it in a file so you could use it below
+1. Create a api key and safe the PINATA_JWT somewhere secretly as it only appear once(for simpicity, just click admin as the permission for test purpose)
+2. Navigate to gateway to maintain the GATEWAY_URL
+3. Safe it in a file so you could use it below
+   
 
 To run the AWS Lambda functions that are related to the smart contracts, download their folders in public/lambda_functions. Then, unzip `node_modules` in pinata_upload and `venv` in pii_scrub. From there, you can directly upload the pinata_upload function to AWS Lambda function as a zip file. Make sure to change `PINATA_JWT` and `GATEWAY_URL` to your specific keys. You will need to include your credentials for Pinata. As for the pii_scrub, you will need to construct an image. Follow these steps:
 
@@ -56,11 +57,10 @@ To run the AWS Lambda functions that are related to the smart contracts, downloa
 3. Follow the steps outlined there on how to upload the image
 4. Navigate to Lambda and create a new function via an image
 5. Link the Lambda function to the image you created
-6. Remember to change the creditantials for pinata to your own pinataJWT and pinataGateway
 
 
 For the pinata gateway, all the library we use are already include in the zip file, follow these steps:
-1.Create an IAM role in aws with the permission
-2.Use that IAM role to create a lambda function with runtime as node.js 22x
-3.Navigate to the function and click upload from, choose the .zip file to upload the functions
-4.Set up the trigger so that the lambda function will run as file uploads.
+1. Create an IAM role in aws with the permission
+2. Use that IAM role to create a lambda function with runtime as node.js 22x
+3. Navigate to the function and click upload from, choose the .zip file to upload the functions
+4. Set up the trigger so that the lambda function will run as file uploads.
