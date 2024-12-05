@@ -35,3 +35,14 @@ NEXT_PUBLIC_PINATA_JWT= {your pinata jwt}
 NEXT_PUBLIC_GATEWAY_URL= {your pinata public gateway url }
 NEXT_PUBLIC_INFURA_API_URL=https://sepolia.infura.io/v3/{your infura api key }
 ```
+
+
+### Appendix
+
+To run the AWS Lambda functions, download their folders in public/lambdas. Then, unzip `node_modules` in pinata_upload and `venv` in pii_scrub. From there, you can directly upload the pinata_upload function to AWS Lambda function as a zip file. You will need to include your credentials for Pinata. As for the pii_scrub, you will need to construct an image. Follow these steps:
+
+- Navigate to the foldrer pii_scrub
+- Go to ECR in AWS and create a new repository
+- Follow the steps outlined there on how to upload the image
+- Navigate to Lambda and create a new function via an image
+- Link the Lambda function to the image you created
