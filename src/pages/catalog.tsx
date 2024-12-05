@@ -62,7 +62,6 @@ const ListView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   useEffect(() => {
     const fetchDatasets = async () => {
       try {
@@ -73,12 +72,8 @@ const ListView = () => {
         const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, provider);
 
         const datasetCount = await contract.datasetCount();
-        const datasetPromises = [];
-        for (let i = 0; i < datasetCount; i++) {
-          datasetPromises.push(contract.getDataset(i + 1));
-          if (i % 10 === 0) await delay(1000); // Delay after every 10 requests (adjust as needed)
-        }
-      const datasetDetails = await Promise.all(datasetPromises);
+        const datasetPromises = Array.from({ length: datasetCount }, (_, id) => contract.getDataset(id + 1));
+        const datasetDetails = await Promise.all(datasetPromises);
 
         const formattedDatasets: Dataset[] = datasetDetails.map((dataset, index) => ({
           id: index + 1,
