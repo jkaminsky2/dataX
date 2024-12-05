@@ -1,1 +1,1 @@
-Here are the Lambdas function we used to scrub PII and malicious data, as well as upload and grab data from IPFS via Pinata.
+Here are the Lambdas function we used to scrub PII and malicious data, as well as upload and grab data from IPFS via Pinata. To use, you will need to unzip `venv` in pii_scrub and `node_modules` in pinata_upload.
