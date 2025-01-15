@@ -221,7 +221,7 @@ const ListView = () => {
                   <Stack spacing={3} flex="1">
                     <Flex justify="space-between" align="center">
                       <Text fontSize="xl" fontWeight="bold">{item.title}</Text>
-                      <Badge colorScheme="black" fontSize="0.9em">{item.price / 1000000000000000000} ETHER</Badge>
+                      <Badge colorScheme="black" fontSize="0.9em">{Number(item.price) / 1000000000000000000} ETHER</Badge>
                     </Flex>
                     <Text color="gray.700" fontWeight="medium"> Owner Address: {item.provider}</Text>
                     <Text noOfLines={2} color="gray.700"> Description: {item.description}</Text>
